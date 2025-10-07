@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SandBox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>SandBox</h1>
+
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <h2>Save / Load Slots</h2>
+            <div id="saveSlots">
+            </div>
+            <button onclick="closeSaveModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="poemModal" class="modal">
+        <div class="modal-content">
+            <h2>Poem</h2>
+            <p id="poemText"></p>
+            <button onclick="closePoemModal()">Got it!</button>
+        </div>
+    </div>
+
+    <div id="controls-container" class="control-container" style="display: none;">
+
+        <div id="brush-temp-controls" class="control-group">
+            <div>
+                <label for="brushSize">Brush Size: <span id="brushValue">3</span></label>
+                <input type="range" id="brushSize" min="1" max="10" value="3" oninput="updateBrushSize(this.value)">
+            </div>
+            <div>
+                <label for="temperature">Temperature: <span id="tempValue">20</span>°C</label>
+                <input type="range" id="temperature" min="-50" max="2000" value="20" oninput="updateTemperature(this.value)">
+            </div>
+            <div>
+                <label for="gravity-slider">Gravity: <span id="gravityValue">1.00</span> G</label>
+                <input type="range" id="gravity-slider" min="0.1" max="2.0" step="0.05" value="1.0" oninput="updateGravity()">
+            </div>
+        </div>
+
+        <div id="weather-controls" class="control-group">
+            <button class="tool-button weather-button" onclick="setWeather('Rain')">🌧️ Rain</button>
+            <button class="tool-button weather-button" onclick="setWeather('Thunderstorm')">⛈️ Thunderstorm</button>
+            <button class="tool-button weather-button selected-weather" onclick="setWeather('None')">☀️ None</button>
+            <button class="tool-button weather-button" onclick="setWeather('Snow')">❄️ Snow</button>
+        </div>
+
+        <div id="global-controls" class="control-group">
+            <button class="tool-button build-button" id="build-mode-button">📐 Build Mode: OFF</button>
+            <button class="tool-button pause-button" id="pause-button">⏸️ Pause</button>
+            <button class="tool-button save-button" onclick="openSaveModal('save')">💾 Save</button>
+            <button class="tool-button load-button" onclick="openSaveModal('load')">📤 Load</button>
+            <button class="tool-button reset-button" onclick="initGrid()">❌ Reset</button>
+        </div>
+
+        <div id="image-upload-controls" class="control-group">
+             <label for="background-image-upload" class="tool-button preset-button">🖼️ Load Background</label>
+             <input type="file" id="background-image-upload" accept="image/*" style="display: none;">
+        </div>
+
+        <div id="element-theme-controls" class="control-group theme-controls">
+        </div>
+
+        <div id="controls" class="control-group element-controls">
+        </div>
+    </div>
+
+    <canvas id="sandCanvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
