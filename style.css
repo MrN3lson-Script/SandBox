@@ -117,14 +117,13 @@ h1 {
 }
 
 .eraser-button {
-    background-color: #777777; /* Neutral grey */
+    background-color: #777777;
     color: white;
 }
 .eraser-button:hover {
     background-color: #999999;
 }
 
-/* Re-purposing selected style for both element and tool buttons */
 .element-button.selected, .eraser-button.selected {
     border: 2px solid #fff;
     box-shadow: 0 0 8px #fff;
