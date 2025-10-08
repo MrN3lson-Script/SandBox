@@ -148,7 +148,7 @@ const ELEMENTS = {
     119: { name: 'Plant', color: '#008000', type: 'solid', theme: 'PLANTS', organic: true, density: 0.5, heat_cap: 2.5, flammable: true, plant_grow: true, decay: 0.001 },
     120: { name: 'Nectar', color: '#ffcc66', type: 'liquid', spread: 1.5, theme: 'FLUIDS', organic: true, density: 0.9, heat_cap: 4.0 },
     121: { name: 'Bee (Agent)', color: '#ffeb3b', type: 'gas', theme: 'CREATIVE', organic: true, health: 50, is_agent_type: 'Bee', density: 0.01, heat_cap: 1.0 },
-    999: { name: 'Eraser', color: '#444444', type: 'special', theme: 'TOOLS' } // Eraser pseudo-element ID
+    999: { name: 'Eraser', color: '#444444', type: 'special', theme: 'TOOLS' }
 };
 
 class Agent {
@@ -609,7 +609,6 @@ function placeElement(gridX, gridY, elementId, size) {
                     continue;
                 }
 
-                // Normal Element/Agent placement logic
                 const elementDef = ELEMENTS[elementId];
 
                 if (ELEMENTS[grid[y][x]].is_immovable && elementId !== grid[y][x]) continue;
@@ -1019,6 +1018,94 @@ function closeSaveModal() {
     document.getElementById('saveModal').style.display = 'none';
 }
 
+const CUSTOM_ELEMENT_START_ID = 500;
+
+function getNextElementId() {
+    let nextId = CUSTOM_ELEMENT_START_ID;
+    while (ELEMENTS.hasOwnProperty(nextId)) {
+        nextId++;
+    }
+    return nextId;
+}
+
+function openElementEditor() {
+    document.getElementById('elementEditorModal').style.display = 'flex';
+}
+
+function closeElementEditor() {
+    document.getElementById('elementEditorModal').style.display = 'none';
+}
+
+function saveCustomElement(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('elementEditorForm');
+    const name = form.elements.editorName.value.trim();
+    const color = form.elements.editorColor.value.trim();
+    const type = form.elements.editorType.value;
+    const density = parseFloat(form.elements.editorDensity.value);
+
+    const newElement = {
+        name: name,
+        color: color,
+        type: type,
+        theme: 'CUSTOM',
+        density: density,
+        heat_cap: 1.0,
+    };
+
+    const meltOrBoilTemp = parseInt(form.elements.editorBoilTemp.value);
+    const freezeOrCondenseTemp = parseInt(form.elements.editorFreezeTemp.value);
+    const meltOrBoilTo = parseInt(form.elements.editorBoilTo.value);
+    const freezeOrCondenseTo = parseInt(form.elements.editorFreezeTo.value);
+
+    if (type === 'liquid' || type === 'gas') {
+        if (!isNaN(meltOrBoilTemp)) newElement.temp_boil = meltOrBoilTemp;
+        if (!isNaN(freezeOrCondenseTemp)) newElement.temp_freeze = freezeOrCondenseTemp;
+        if (!isNaN(meltOrBoilTo)) newElement.boil_to = meltOrBoilTo;
+        if (!isNaN(freezeOrCondenseTo)) newElement.freeze_to = freezeOrCondenseTo;
+
+        if (type === 'liquid') {
+            newElement.spread = 1;
+        } else if (type === 'gas') {
+            newElement.lift = 1;
+        }
+    } else if (type === 'solid') {
+        if (!isNaN(meltOrBoilTemp)) newElement.temp_melt = meltOrBoilTemp;
+        if (!isNaN(meltOrBoilTo)) newElement.melt_to = meltOrBoilTo;
+    }
+
+    const reactionString = form.elements.editorReaction.value.trim();
+    if (reactionString) {
+        try {
+            const reactionProps = JSON.parse(reactionString);
+            Object.assign(newElement, reactionProps);
+        } catch (e) {
+            alert('error: invalid json format for react field. check the syntax');
+            return;
+        }
+    }
+
+    const newId = getNextElementId();
+
+    ELEMENTS[newId] = newElement;
+
+    currentTool = newId;
+    alert(`Element "${name}" (ID: ${newId}) successfully created and selected!`);
+
+    if (typeof generateElementButtons === 'function') {
+        generateElementButtons();
+    }
+
+    closeElementEditor();
+    form.reset();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     startGame();
 });
+
+const editorForm = document.getElementById('elementEditorForm');
+if (editorForm) {
+    editorForm.addEventListener('submit', saveCustomElement);
+}

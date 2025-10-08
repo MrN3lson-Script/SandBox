@@ -208,3 +208,35 @@ h1 {
     margin: 5px 0;
 }
 
+#elementEditorModal .modal-content {
+    max-width: 500px;
+    text-align: left;
+}
+
+#elementEditorForm label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#elementEditorForm input,
+#elementEditorForm select,
+#elementEditorForm textarea {
+    width: 100%;
+    box-sizing: border-box;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+#elementEditorForm textarea {
+    min-height: 80px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#elementEditorForm button[type="submit"] {
+    margin-top: 20px;
+    background-color: #00cc66;
+}
+
